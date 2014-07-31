@@ -10,7 +10,7 @@ git clone https://github.com/ribot/dokku-slack.git /var/lib/dokku/plugins/dokku-
 
 ## Configuration
 
-Edit `/home/dokku/dokkurc` or `/etc/slack`
+Edit `/home/dokku/dokkurc` or `/etc/slack` or `/home/dokku/$APP/ENV`
 
 ```sh
 export SLACK_NOTIFY=1

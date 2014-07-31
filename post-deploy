@@ -1,19 +1,22 @@
 #!/usr/bin/env bash
 set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 
-if [ "$SLACK_NOTIFY" == 1 ]; then
-  APP="$1";
-  IMAGE="$2";
-  HOSTNAME=$(hostname -f);
+APP="$1";
+HOSTNAME=$(hostname -f);
+MESSAGE="Deployed $APP to $HOSTNAME via https://$APP.$HOSTNAME"
 
+[[ -f $DOKKU_ROOT/$APP/ENV ]] && source $DOKKU_ROOT/$APP/ENV # allows us to read in SLACK_NOTIFY if we define it in the app env
+
+if [ "$SLACK_NOTIFY" == 1 ]; then
   if [ -f $DOKKU_ROOT/$APP/ENV ];then
-    if grep SLACK_CHANNEL $DOKKU_ROOT/$APP/ENV ; then
+    if grep SLACK_CHANNEL $DOKKU_ROOT/$APP/ENV > /dev/null; then
       unset SLACK_CHANNEL
       eval `grep SLACK_CHANNEL $DOKKU_ROOT/$APP/ENV`
     fi
   fi
 
+  [[ -n "$SLACK_MESSAGE" ]] && eval `export MESSAGE=$SLACK_MESSAGE`
 
   echo "-----> Notifying Slack ..."
-  echo "Deployed $APP to $HOSTNAME via https://$APP.$HOSTNAME" | $PLUGIN_PATH/dokku-slack/slack-notify >/dev/null
+  echo $MESSAGE | $PLUGIN_PATH/dokku-slack/slack-notify > /dev/null
 fi
