@@ -5,10 +5,12 @@ APP="$1"
 IMAGE="$2"
 HOSTNAME=$(hostname -f)
 
-if [[ -f "$DOKKU_ROOT/$APP/SLACK_URL" || -f "$DOKKU_ROOT/SLACK_URL" ]]; then
+[[ -f $DOKKU_ROOT/$APP/ENV ]] && source $DOKKU_ROOT/$APP/ENV # allows us to read in SLACK_* if we define it in the app env
+
+if [[ -f "$DOKKU_ROOT/$APP/SLACK_URL" || -f "$DOKKU_ROOT/SLACK_URL" || "$SLACK_NOTIFY" == "1" ]]; then
   echo "-----> Notifying Slack ..."
   URL=$(dokku url $APP)
-  SLACK_URL=$(cat "$DOKKU_ROOT/$APP/SLACK_URL" 2> /dev/null || cat "$DOKKU_ROOT/SLACK_URL" 2> /dev/null)
+  SLACK_URL=$(cat "$DOKKU_ROOT/$APP/SLACK_URL" 2> /dev/null || cat "$DOKKU_ROOT/SLACK_URL" 2> /dev/null || echo "https://$SLACK_DOMAIN.slack.com/services/hooks/incoming-webhook?token=$SLACK_TOKEN")
   SLACK_JSON="{ \
     \"attachments\": [{ \
       \"text\": \"Deployed $APP to $HOSTNAME via $URL\", \
