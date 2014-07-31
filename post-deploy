@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+set -a
 
 APP="$1";
 HOSTNAME=$(hostname -f);
@@ -15,7 +16,7 @@ if [ "$SLACK_NOTIFY" == 1 ]; then
     fi
   fi
 
-  [[ -n "$SLACK_MESSAGE" ]] && eval `export MESSAGE=$SLACK_MESSAGE`
+  [[ -n "$SLACK_MESSAGE" ]] && MESSAGE=`echo $SLACK_MESSAGE| envsubst`
 
   echo "-----> Notifying Slack ..."
   echo $MESSAGE | $PLUGIN_PATH/dokku-slack/slack-notify > /dev/null
