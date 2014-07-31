@@ -18,6 +18,7 @@ export SLACK_DOMAIN=<domain>
 export SLACK_TOKEN=<token>
 export SLACK_USERNAME='Dokku'
 export SLACK_CHANNEL=dokku #default_channel
+export SLACK_MESSAGE='Deployed $APP to $HOSTNAME via https://$APP.$HOSTNAME'
 ```
 
 The domain is the subdomain part of the URL use use to get to the Slack webapp. For example for `http://ribot.slack.com/` it's `ribot`.
