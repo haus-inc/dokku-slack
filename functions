@@ -6,7 +6,7 @@ get_latest_commit_user_from_git() {
   local APP="$1"
 
   pushd $DOKKU_ROOT/$APP > /dev/null
-  COMMIT_AUTHOR=$(git log -n1 --pretty="%an <%ae>" || true)
+  COMMIT_AUTHOR=$(git log -n1 --pretty="%an <%ae> (%h)" || true)
   [[ -n "$COMMIT_AUTHOR" ]] && echo $COMMIT_AUTHOR
 }
 
