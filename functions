@@ -3,13 +3,14 @@ set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
 
 # git specific implementation
 get_latest_commit_user_from_git() {
-  local APP="$1"
+  local APP="$1"; local REV="$2"
 
   pushd $DOKKU_ROOT/$APP > /dev/null
-  COMMIT_AUTHOR=$(git log -n1 --pretty="%an <%ae> (%h)" || true)
+  COMMIT_AUTHOR=$(git log -n1 $REV --pretty="%an <%ae> (%h)" || true)
   [[ -n "$COMMIT_AUTHOR" ]] && echo $COMMIT_AUTHOR
 }
 
+# example for bzr
 get_latest_commit_user_from_bzr() {
   local APP="$1"
 
@@ -20,12 +21,12 @@ get_latest_commit_user_from_bzr() {
 }
 
 # wrapper function to be extended to other VCS
-get_latest_commit_user() {
-  local APP="$1"
+get_commit_author_by_rev() {
+  local APP="$1"; local REV="$2"
 
   pushd $DOKKU_ROOT/$APP > /dev/null
   if (git log -1 &> /dev/null); then
-    get_latest_commit_user_from_git $APP
+    get_latest_commit_user_from_git $APP $REV
   elif (bzr log -l 1 &> /dev/null); then
     get_latest_commit_user_from_bzr $APP
   else

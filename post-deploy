@@ -14,7 +14,7 @@ if [[ -f "$DOKKU_ROOT/$APP/SLACK_URL" || -f "$DOKKU_ROOT/SLACK_URL" || "$SLACK_N
   SLACK_URL=$(cat "$DOKKU_ROOT/$APP/SLACK_URL" 2> /dev/null || cat "$DOKKU_ROOT/SLACK_URL" 2> /dev/null || echo "https://$SLACK_DOMAIN.slack.com/services/hooks/incoming-webhook?token=$SLACK_TOKEN")
 
   MESSAGE_TEXT="deployed $APP to $HOSTNAME via $URL"
-  DEPLOYING_USER="$(get_latest_commit_user $APP)"
+  DEPLOYING_USER="$(cat $DOKKU_ROOT/$APP/.commit_author 2>/dev/null || true)"
   [[ -n "$DEPLOYING_USER" ]] && MESSAGE_TEXT="$DEPLOYING_USER:"$'\n'"$MESSAGE_TEXT"
 
   SLACK_JSON="{ \
