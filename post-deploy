@@ -11,7 +11,7 @@ HOSTNAME=$(hostname -f)
 if [[ -f "$DOKKU_ROOT/$APP/SLACK_URL" || -f "$DOKKU_ROOT/SLACK_URL" || "$SLACK_NOTIFY" == "1" ]]; then
   echo "-----> Notifying Slack ..."
   URL=$(dokku url $APP)
-  SLACK_URL=$(cat "$DOKKU_ROOT/$APP/SLACK_URL" 2> /dev/null || cat "$DOKKU_ROOT/SLACK_URL" 2> /dev/null || echo "https://$SLACK_DOMAIN.slack.com/services/hooks/incoming-webhook?token=$SLACK_TOKEN")
+  SLACK_URL=$(test ! -z "$SLACK_URL" && echo "$SLACK_URL" || cat "$DOKKU_ROOT/$APP/SLACK_URL" 2> /dev/null || cat "$DOKKU_ROOT/SLACK_URL" 2> /dev/null || echo "https://$SLACK_DOMAIN.slack.com/services/hooks/incoming-webhook?token=$SLACK_TOKEN")
 
   MESSAGE_TEXT="deployed $APP to $HOSTNAME via $URL"
   DEPLOYING_USER="$(cat $DOKKU_ROOT/$APP/.commit_author 2>/dev/null || true)"
