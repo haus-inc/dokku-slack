@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -eo pipefail; [[ $DOKKU_TRACE ]] && set -x
+[[ $DOKKU_TRACE ]] && set -x
 
 # git specific implementation
 get_latest_commit_user_from_git() {
